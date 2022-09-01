@@ -1,0 +1,54 @@
+/* From template.css */
+
+body, div, p, span, a,
+h1, h2, h3, h4, h5, h6,
+dl, dt, dd, ol, ul, li {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+/* Project-specific settings */
+
+body {
+  border: 1px solid #ddd;
+  margin: 1em;
+  padding: 1em;
+}
+
+.disclosure-nav {
+  background-color: #eee;
+  display: flex;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#aboutMenu {
+  display: none;
+}
+
+#admissionsMenu {
+  display: none;
+}
+
+#academicsMenu {
+  display: none;
+}
+
+main > h2 {
+  font-size: 135%;
+  margin: 1em 0 0.5em;
+}

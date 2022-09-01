@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Example Navigation Menu</title>
+    <meta charset="UTF-8">
+    <link type="text/css" rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header>
+      <nav aria-label="Mythical University">
+        <ul id="exTest" class="disclosure-nav">
+          <li>
+            <button type="button" aria-expanded="false" aria-controls="aboutMenu">
+              About
+            </button>
+            <ul id="aboutMenu">
+              <li>
+                <a href="#pageContent">Overview</a>
+              </li>
+              <li>
+                <a href="#pageContent">Administration</a>
+              </li>
+              <li>
+                <a href="#pageContent">Facts</a>
+              </li>
+              <li>
+                <a href="#pageContent">Campus Tours</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <button type="button" aria-expanded="false" aria-controls="admissionsMenu">
+              Admissions
+            </button>
+            <ul id="admissionsMenu">
+              <li>
+                <a href="#pageContent">Apply</a>
+              </li>
+              <li>
+                <a href="#pageContent">Tuition</a>
+              </li>
+              <li>
+                <a href="#pageContent">Sign Up</a>
+              </li>
+              <li>
+                <a href="#pageContent">Visit</a>
+              </li>
+              <li>
+                <a href="#pageContent">Photo Tour</a>
+              </li>
+              <li>
+                <a href="#pageContent">Connect</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <button type="button" aria-expanded="false" aria-controls="academicsMenu">
+              Academics
+            </button>
+            <ul id="academicsMenu">
+              <li>
+                <a href="#pageContent">Colleges & Schools</a>
+              </li>
+              <li>
+                <a href="#pageContent">Programs of Study</a>
+              </li>
+              <li>
+                <a href="#pageContent">Honors Programs</a>
+              </li>
+              <li>
+                <a href="#pageContent">Online Courses</a>
+              </li>
+              <li>
+                <a href="#pageContent">Course Explorer</a>
+              </li>
+              <li>
+                <a href="#pageContent">Register for Class</a>
+              </li>
+              <li>
+                <a href="#pageContent">Academic Calendar</a>
+              </li>
+              <li>
+                <a href="#pageContent">Transcripts</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <main id="pageContent"
+     class="disclosure-page-content"
+     tabindex="-1"
+     role="region"
+     aria-label="Mythical University sample page content">
+      <h2 id="pageHeading">
+        Mythical University
+      </h2>
+      <p>
+        Sample content section. Activating a link above will update and navigate to this region.
+      </p>
+    </main>
+    <script src="main.js"></script>
+    <script>
+      const nav = document.querySelector('header nav');
+      const navMenu = new DisclosureMenu(nav);
+    </script>
+  </body>
+</html>
