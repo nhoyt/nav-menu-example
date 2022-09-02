@@ -14,7 +14,7 @@ class DisclosureMenu {
   }
 
   init () {
-    // assumption: every button element is a menu button that controls a submenu
+    // Assumption: every button element is a menu button that controls a submenu
     const menuButtons = Array.from(this.container.querySelectorAll('button'));
 
     for (const button of menuButtons) {
@@ -22,9 +22,11 @@ class DisclosureMenu {
 
       const submenu = document.getElementById(button.getAttribute('aria-controls'));
       if (submenu) {
+        // Initialize data structures
         this.submenus.push(submenu);
         this.buttonMap.set(button, submenu);
         this.submenuMap.set(submenu, button);
+        // Add handler for click event to button
         button.addEventListener('click', evt => {
           this.toggleSubmenu(evt.target);
         });
@@ -35,7 +37,7 @@ class DisclosureMenu {
   closeAllSubmenus () {
     for (const submenu of this.submenus) {
       // Hide the submenu
-      submenu.style.display = 'none';
+      submenu.classList.add('hide');
 
       // Update aria-expanded on the button associated with the submenu
       const button = this.submenuMap.get(submenu);
@@ -51,12 +53,12 @@ class DisclosureMenu {
       const isVisible = button.getAttribute('aria-expanded') === 'true';
       if (isVisible) {
         button.setAttribute('aria-expanded', 'false');
-        submenu.style.display = 'none';
+        submenu.classList.add('hide');
       }
       else {
         this.closeAllSubmenus();
         button.setAttribute('aria-expanded', 'true');
-        submenu.style.display = 'block';
+        submenu.classList.remove('hide');
       }
     }
   }

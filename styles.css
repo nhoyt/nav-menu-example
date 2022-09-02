@@ -36,16 +36,25 @@ body {
   margin: 0;
 }
 
-#aboutMenu {
+ul.submenu {
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 0.25em 1em;
+  z-index: 10;
+}
+
+ul.submenu.hide {
   display: none;
 }
 
-#admissionsMenu {
-  display: none;
+ul.submenu > li {
+  display: block;
+  padding: 4px 0;
 }
 
-#academicsMenu {
-  display: none;
+ul.submenu > li > a {
+  text-decoration: none;
 }
 
 main > h2 {
