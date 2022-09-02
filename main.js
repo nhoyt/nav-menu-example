@@ -1,9 +1,9 @@
 /* main.js */
 
 class DisclosureMenu {
-  container;
-  buttonMap;
-  submenuMap;
+  container;    // top-level navigation menu element
+  buttonMap;    // maps each button to its corresponding submenu
+  submenuMap;   // maps each submenu to its corresponding button
   submenus = [];
 
   constructor (containerNode) {
