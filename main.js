@@ -1,37 +1,63 @@
 /* main.js */
 
 class DisclosureMenu {
-  constructor (container) {
+  container;
+  buttonMap;
+  submenuMap;
+  submenus = [];
 
-    this.containerNode = container;
-    this.menuButtons = container.querySelectorAll('button');
-    this.addListeners();
+  constructor (containerNode) {
+    this.container = containerNode;
+    this.buttonMap = new WeakMap();
+    this.submenuMap = new WeakMap();
+    this.init();
   }
 
-  addListeners () {
-    for (const button of this.menuButtons) {
+  init () {
+    // assumption: every button element is a menu button that controls a submenu
+    const menuButtons = Array.from(this.container.querySelectorAll('button'));
+
+    for (const button of menuButtons) {
       console.log(button.getAttribute('aria-controls'));
 
-      button.addEventListener('click', evt => {
-        this.toggleSubmenu(evt.target);
-      });
+      const submenu = document.getElementById(button.getAttribute('aria-controls'));
+      if (submenu) {
+        this.submenus.push(submenu);
+        this.buttonMap.set(button, submenu);
+        this.submenuMap.set(submenu, button);
+        button.addEventListener('click', evt => {
+          this.toggleSubmenu(evt.target);
+        });
+      }
     }
   }
 
-  getSubmenu (button) {
-    const idSubmenu = button.getAttribute('aria-controls');
-    return document.getElementById(idSubmenu);
+  closeAllSubmenus () {
+    for (const submenu of this.submenus) {
+      // Hide the submenu
+      submenu.style.display = 'none';
+
+      // Update aria-expanded on the button associated with the submenu
+      const button = this.submenuMap.get(submenu);
+      if (button) {
+        button.setAttribute('aria-expanded', 'false');
+      }
+    }
   }
 
   toggleSubmenu (button) {
-    const submenu = this.getSubmenu(button);
-    if (button.getAttribute('aria-expanded') === 'true') {
-      button.setAttribute('aria-expanded', 'false');
-      submenu.style.display = 'none';
-    }
-    else {
-      button.setAttribute('aria-expanded', 'true');
-      submenu.style.display = 'block';
+    const submenu = this.buttonMap.get(button);
+    if (submenu) {
+      const isVisible = button.getAttribute('aria-expanded') === 'true';
+      if (isVisible) {
+        button.setAttribute('aria-expanded', 'false');
+        submenu.style.display = 'none';
+      }
+      else {
+        this.closeAllSubmenus();
+        button.setAttribute('aria-expanded', 'true');
+        submenu.style.display = 'block';
+      }
     }
   }
 }
