@@ -22,11 +22,11 @@ class DisclosureMenu {
 
       const submenu = document.getElementById(button.getAttribute('aria-controls'));
       if (submenu) {
-        // Initialize data structures
+        // Populate data structures
         this.submenus.push(submenu);
         this.buttonMap.set(button, submenu);
         this.submenuMap.set(submenu, button);
-        // Add handler for click event to button
+        // Add click event handler to button
         button.addEventListener('click', evt => {
           this.toggleSubmenu(evt.target);
         });
