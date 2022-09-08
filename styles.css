@@ -31,9 +31,15 @@ body {
 .disclosure-nav {
   background-color: #eee;
   display: flex;
+  justify-content: space-between;
   list-style-type: none;
   padding: 0;
   margin: 0;
+  width: 30%;
+}
+
+button::after {
+  content: ' > ';
 }
 
 ul.submenu {
