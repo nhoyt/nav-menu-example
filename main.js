@@ -26,12 +26,12 @@ class MenuItem {
     this.menuContainer = menuContainer;
 
     const firstChild = this.listItem.firstElementChild;
-    switch (firstChild.tagName) {
-      case 'A':
+    switch (firstChild.tagName.toLowerCase()) {
+      case 'a':
         this.anchor = firstChild;
         break;
 
-      case 'BUTTON':
+      case 'button':
         this.button = firstChild;
         break;
     }
@@ -94,6 +94,7 @@ class MenuContainer {
   closeAllSubmenus () {
     for (const menuItem of this.menuItems) {
       if (menuItem.submenu) {
+        menuItem.submenu.closeAllSubmenus();
         menuItem.closeSubmenu();
       }
     }
