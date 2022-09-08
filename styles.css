@@ -28,6 +28,11 @@ body {
   padding: 1em;
 }
 
+main > h2 {
+  font-size: 135%;
+  margin: 1em 0 0.5em;
+}
+
 .disclosure-nav {
   background-color: #eee;
   display: flex;
@@ -36,6 +41,10 @@ body {
   padding: 0;
   margin: 0;
   width: 30%;
+}
+
+button[aria-expanded="false"] + ul {
+  display: none;
 }
 
 button::after {
@@ -50,10 +59,6 @@ ul.submenu {
   z-index: 10;
 }
 
-ul.submenu.hide {
-  display: none;
-}
-
 ul.submenu > li {
   display: block;
   padding: 4px 0;
@@ -61,9 +66,4 @@ ul.submenu > li {
 
 ul.submenu > li > a {
   text-decoration: none;
-}
-
-main > h2 {
-  font-size: 135%;
-  margin: 1em 0 0.5em;
 }
