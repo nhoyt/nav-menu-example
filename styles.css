@@ -67,3 +67,9 @@ ul.submenu > li {
 ul.submenu > li > a {
   text-decoration: none;
 }
+
+ul.submenu button {
+  background: none;
+  border: none;
+  padding-left: 0;
+}
