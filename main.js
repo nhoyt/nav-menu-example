@@ -1,65 +1,113 @@
-/* main.js */
+// main.js
 
-class DisclosureMenu {
-  container;      // top-level navigation menu element
-  buttonMap;      // maps each button to its corresponding submenu
-  submenuMap;     // maps each submenu to its corresponding button
-  submenus = [];  // array of all submenus
+// ----------------------------------------------------------------
+// MenuItem: An object that encapsulates elements that have either link
+//     behavior or button/submenu show/hide behavior.
+//
+// Properties:
+//   listItem: the DOM 'li' element that represents this menuItem
+//   menuContainer: the MenuContainer object that contains this menuItem
+//   anchor: if the first child of the listItem is an 'a' element, it is
+//     assigned to the anchor property
+//   button: if the first child of the listItem is a 'button' element, it is
+//     assigned to the button property
+//   submenu: if the immediate sibling after the button is a 'ul' element, it
+//     is assigned to the submenu property
 
-  constructor (containerNode) {
-    this.container = containerNode;
-    this.buttonMap = new WeakMap();
-    this.submenuMap = new WeakMap();
+class MenuItem {
+  listItem;         // 'li' element for this menuItem
+  menuContainer;    // MenuContainer object that contains this menuItem
+  anchor  = null;   // If present, an 'a' element
+  button  = null;   // if present, a 'button' element
+  submenu = null;   // If present, a nested MenuContainer object
+
+  constructor (domElement, menuContainer) {
+    this.listItem = domElement;
+    this.menuContainer = menuContainer;
+
+    const firstChild = this.listItem.firstElementChild;
+    switch (firstChild.tagName) {
+      case 'A':
+        this.anchor = firstChild;
+        break;
+
+      case 'BUTTON':
+        this.button = firstChild;
+        break;
+    }
+
     this.init();
   }
 
   init () {
-    // Assumption: every button element is a menu button that controls a submenu
-    const menuButtons = Array.from(this.container.querySelectorAll('button'));
+    if (this.button) {
+      // Assumption: If an 'li' element has a 'button' element as its first
+      // child, its immediate sibling is assumed to be a 'ul' element
+      // containing the submenu that the button controls.
+      const ul = this.listItem.querySelector('button + ul');
+      this.submenu = new MenuContainer(ul);
+      this.button.setAttribute('type', 'button');
+      this.button.setAttribute('aria-expanded', 'false');
+      this.button.addEventListener('click', evt => {
+        this.handleButtonClick(evt);
+      });
+    }
+  }
 
-    for (const button of menuButtons) {
-      console.log(button.getAttribute('aria-controls'));
+  closeSubmenu () {
+    this.button.setAttribute('aria-expanded', 'false');
+  }
 
-      const submenu = document.getElementById(button.getAttribute('aria-controls'));
-      if (submenu) {
-        // Populate data structures
-        this.submenus.push(submenu);
-        this.buttonMap.set(button, submenu);
-        this.submenuMap.set(submenu, button);
-        // Add click event handler to button
-        button.addEventListener('click', evt => {
-          this.toggleSubmenu(evt.target);
-        });
-      }
+  handleButtonClick (evt) {
+    const state = this.button.getAttribute('aria-expanded');
+    if (state === 'false') {
+      this.menuContainer.closeAllSubmenus();
+      this.button.setAttribute('aria-expanded', 'true');
+    }
+    else {
+      this.closeSubmenu();
+    }
+  }
+}
+
+// ----------------------------------------------------------------
+// MenuContainer
+//
+// Properties:
+//   listElement: DOM element list container for the menu's 'li' elements
+//   menuItems: array of MenuItem objects
+
+class MenuContainer {
+  listElement;
+  menuItems = [];
+
+  constructor (listElement) {
+    this.listElement = listElement;
+
+    const listItems = Array.from(this.listElement.querySelectorAll(':scope > li'));
+    console.log(`listItems: ${listItems.length}`);
+    for (const listItem of listItems) {
+      this.menuItems.push(new MenuItem(listItem, this));
     }
   }
 
   closeAllSubmenus () {
-    for (const submenu of this.submenus) {
-      // Hide the submenu
-      submenu.classList.add('hide');
-
-      // Update aria-expanded on the button associated with the submenu
-      const button = this.submenuMap.get(submenu);
-      if (button) {
-        button.setAttribute('aria-expanded', 'false');
+    for (const menuItem of this.menuItems) {
+      if (menuItem.submenu) {
+        menuItem.closeSubmenu();
       }
     }
   }
+}
 
-  toggleSubmenu (button) {
-    const submenu = this.buttonMap.get(button);
-    if (submenu) {
-      const isVisible = button.getAttribute('aria-expanded') === 'true';
-      if (isVisible) {
-        button.setAttribute('aria-expanded', 'false');
-        submenu.classList.add('hide');
-      }
-      else {
-        this.closeAllSubmenus();
-        button.setAttribute('aria-expanded', 'true');
-        submenu.classList.remove('hide');
-      }
-    }
+// ----------------------------------------------------------------
+// DisclosureMenu: Instantiates and maintains a reference to a MenuContainer object
+
+class DisclosureMenu {
+  menuContainer;
+
+  constructor (topLevelElement) {
+    // Assumption: menuContainer DOM element is first descendant 'ul' element of topLevelElement
+    this.menuContainer = new MenuContainer(topLevelElement.querySelector('ul'));
   }
 }
