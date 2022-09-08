@@ -68,8 +68,13 @@ ul.submenu > li > a {
   text-decoration: none;
 }
 
+ul.submenu > li > a:visited {
+  color: blue;
+}
+
 ul.submenu button {
   background: none;
   border: none;
+  color: blue;
   padding-left: 0;
 }
