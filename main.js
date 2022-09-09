@@ -79,8 +79,11 @@ class MenuItem {
 // MenuContainer
 //
 // Properties:
-//   listElement: DOM element list container for the menu's 'li' elements
-//   menuItems: array of MenuItem objects
+//   listElement - DOM list element at the root of this container's subtree
+//   menuItems   - array of MenuItem objects that correspond to the immediate
+//                 'li' children of this container's listElement
+//   parentMenu  - MenuContainer object that contains this MenuContainer, or
+//                 null if this is the top-level MenuContainer
 
 class MenuContainer {
   listElement;
