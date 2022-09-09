@@ -30,9 +30,9 @@ The following markup patterns are followed in creating the HTML for the navigati
 
 * List item 'li' elements within 'ul' elements can be thought of as menu items. In the code, each menu items is represented by an instance of the MenuItem class.
 
-* A MenuItem can act in only one of two possible ways:
-  * As a link, which is the case when the 'li' element contains an 'a' element.
-  * As a menu button that will show or hide a submenu, which is the case when the 'li' element contains the following pair of elements: a 'button' element immediately followed by a 'ul' element.
+* A MenuItem can have only one of two possible behaviors:
+  * Behaves as a link, which is the case when the 'li' element contains only an 'a' element.
+  * Behaves as a menu button that will show or hide a submenu, which is the case when the 'li' element contains the following pair of elements: a 'button' element immediately followed by a 'ul' element.
 
 ## To Do
 
