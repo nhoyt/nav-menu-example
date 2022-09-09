@@ -45,11 +45,16 @@ class MenuItem {
       // child, its immediate sibling is assumed to be a 'ul' element
       // containing the submenu that the button controls.
       const ul = this.listItem.querySelector('button + ul');
-      this.submenu = new MenuContainer(ul);
+      this.submenu = new MenuContainer(ul, this.menuContainer);
       this.button.setAttribute('type', 'button');
       this.button.setAttribute('aria-expanded', 'false');
       this.button.addEventListener('click', evt => {
         this.handleButtonClick(evt);
+      });
+    }
+    if (this.anchor) {
+      this.anchor.addEventListener('click', evt => {
+        this.menuContainer.closeAllMenus();
       });
     }
   }
@@ -80,9 +85,13 @@ class MenuItem {
 class MenuContainer {
   listElement;
   menuItems = [];
+  parentMenu = null;
 
-  constructor (listElement) {
+  constructor (listElement, parentMenu) {
     this.listElement = listElement;
+    if (parentMenu) {
+      this.parentMenu = parentMenu;
+    }
 
     const listItems = Array.from(this.listElement.querySelectorAll(':scope > li'));
     console.log(`listItems: ${listItems.length}`);
@@ -99,6 +108,14 @@ class MenuContainer {
       }
     }
   }
+
+  closeAllMenus () {
+    let topLevel = this.parentMenu;
+    while (topLevel.parentMenu) {
+      topLevel = topLevel.parentMenu;
+    }
+    topLevel.closeAllSubmenus();
+  }
 }
 
 // ----------------------------------------------------------------
@@ -110,5 +127,6 @@ class DisclosureMenu {
   constructor (topLevelElement) {
     // Assumption: menuContainer DOM element is first descendant 'ul' element of topLevelElement
     this.menuContainer = new MenuContainer(topLevelElement.querySelector('ul'));
+    window.addEventListener('unload', this.menuContainer.closeAllSubmenus());
   }
 }
