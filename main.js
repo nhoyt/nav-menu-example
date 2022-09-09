@@ -155,7 +155,7 @@ class MenuContainer {
     }
 
     const listItems = Array.from(this.listElement.querySelectorAll(':scope > li'));
-    console.log(`listItems: ${listItems.length}`);
+    // console.log(`listItems: ${listItems.length}`);
     for (const listItem of listItems) {
       this.menuItems.push(new MenuItem(listItem, this));
     }
@@ -171,6 +171,7 @@ class MenuContainer {
   }
 
   closeAllMenus () {
+    // Get the top-level MenuContainer object
     let topLevel = this.parentMenu || this;
     while (topLevel.parentMenu) {
       topLevel = topLevel.parentMenu;
@@ -183,11 +184,21 @@ class MenuContainer {
 // DisclosureMenu: Instantiates and maintains a reference to a MenuContainer object
 
 class DisclosureMenu {
+  rootNode;
   menuContainer;
 
-  constructor (topLevelElement) {
-    // Assumption: menuContainer DOM element is first descendant 'ul' element of topLevelElement
-    this.menuContainer = new MenuContainer(topLevelElement.querySelector('ul'));
+  constructor (rootNode) {
+    this.rootNode = rootNode;
+    this.rootNode.addEventListener('focusout', evt => this.onFocusOut(evt));
+
+    // Assumption: menuContainer DOM element is first descendant 'ul' element of rootNode
+    this.menuContainer = new MenuContainer(rootNode.querySelector('ul'));
     window.addEventListener('unload', this.menuContainer.closeAllSubmenus());
+  }
+
+  onFocusOut (evt) {
+    if (!this.rootNode.contains(evt.relatedTarget)) {
+      this.menuContainer.closeAllMenus();
+    }
   }
 }
