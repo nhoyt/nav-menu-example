@@ -42,10 +42,15 @@ class MenuItem {
   init () {
     if (this.button) {
       // Assumption: If an 'li' element has a 'button' element as its first
-      // child, the button's immediate sibling is assumed to be a 'ul' element
-      // containing the submenu that the button controls.
+      // child, the expectation for this navigation menu markup pattern is
+      // that the button's immediate sibling is a 'ul' element containing the
+      // submenu that the button controls.
       const ul = this.listItem.querySelector('button + ul');
-      this.submenu = new MenuContainer(ul, this.button, this.menuContainer);
+      if (ul) {
+        // Since the 'ul' element immediately follows a 'button' element within
+        // an 'li' element, it is assumed to be a submenu within the 'li'.
+        this.submenu = new MenuContainer(ul, this.button, this.menuContainer);
+      }
       this.button.setAttribute('type', 'button');
       this.button.setAttribute('aria-expanded', 'false');
       this.button.addEventListener('click', evt => this.handleButtonClick(evt));
