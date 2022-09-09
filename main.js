@@ -45,7 +45,7 @@ class MenuItem {
       // child, its immediate sibling is assumed to be a 'ul' element
       // containing the submenu that the button controls.
       const ul = this.listItem.querySelector('button + ul');
-      this.submenu = new MenuContainer(ul, this.menuContainer, this.button);
+      this.submenu = new MenuContainer(ul, this.button, this.menuContainer);
       this.button.setAttribute('type', 'button');
       this.button.setAttribute('aria-expanded', 'false');
       this.button.addEventListener('click', evt => this.handleButtonClick(evt));
@@ -83,7 +83,8 @@ class MenuItem {
         if (target.getAttribute('aria-expanded') === 'false') {
           const parentMenu = this.menuContainer.parentMenu;
           if (parentMenu) parentMenu.closeAllSubmenus();
-          this.menuContainer.button.focus();
+          const ctrlButton = this.menuContainer.ctrlButton;
+          if (ctrlButton) ctrlButton.focus();
         }
         else {
           this.closeSubmenu();
@@ -107,7 +108,8 @@ class MenuItem {
       case 'Escape':
         const parentMenu = this.menuContainer.parentMenu;
         if (parentMenu) parentMenu.closeAllSubmenus();
-        this.menuContainer.button.focus();
+        const ctrlButton = this.menuContainer.ctrlButton;
+        if (ctrlButton) ctrlButton.focus();
         flag = true;
         break;
     }
@@ -124,25 +126,27 @@ class MenuItem {
 //
 // Properties:
 //   listElement - DOM list element at the root of this container's subtree
-//   menuItems   - array of MenuItem objects that correspond to the immediate
-//                 'li' children of this container's listElement
+//   ctrlButton  - DOM 'button' element that controls this MenuContainer
 //   parentMenu  - MenuContainer object that contains this MenuContainer, or
 //                 null if this is the top-level MenuContainer
-//   button
+//   menuItems   - array of MenuItem objects that correspond to the immediate
+//                 'li' children of this container's listElement
 
 class MenuContainer {
   listElement;
-  menuItems = [];
+  ctrlButton = null;
   parentMenu = null;
-  button = null;
+  menuItems = [];
 
-  constructor (listElement, parentMenu, toggleButton) {
+  constructor (listElement, ctrlButton, parentMenu) {
     this.listElement = listElement;
+
+    // These will both be null for the top-level container
+    if (ctrlButton) {
+      this.ctrlButton = ctrlButton;
+    }
     if (parentMenu) {
       this.parentMenu = parentMenu;
-    }
-    if (toggleButton) {
-      this.button = toggleButton;
     }
 
     const listItems = Array.from(this.listElement.querySelectorAll(':scope > li'));
