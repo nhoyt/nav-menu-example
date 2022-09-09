@@ -7,80 +7,102 @@
   </head>
   <body>
     <header>
-      <nav aria-label="Mythical University">
-        <ul id="exTest" class="disclosure-nav">
+      <nav aria-label="Site Navigation">
+        <ul class="disclosure-nav">
           <li>
-            <button type="button" aria-expanded="false" aria-controls="aboutMenu">
-              About
-            </button>
-            <ul id="aboutMenu" class="submenu hide">
+            <button>Menu One</button>
+            <ul id="menuOne" class="submenu">
               <li>
-                <a href="#pageContent">Overview</a>
+                <a href="#pageContent">Link 1</a>
               </li>
               <li>
-                <a href="#pageContent">Administration</a>
+                <a href="#pageContent">Link 2</a>
               </li>
               <li>
-                <a href="#pageContent">Facts</a>
+                <a href="#pageContent">Link 3</a>
               </li>
               <li>
-                <a href="#pageContent">Campus Tours</a>
+                <a href="#pageContent">Link 4</a>
               </li>
             </ul>
           </li>
           <li>
-            <button type="button" aria-expanded="false" aria-controls="admissionsMenu">
-              Admissions
-            </button>
-            <ul id="admissionsMenu" class="submenu hide">
+            <button>Menu Two</button>
+            <ul id="menuTwo" class="submenu">
               <li>
-                <a href="#pageContent">Apply</a>
+                <a href="#pageContent">Link 1</a>
               </li>
               <li>
-                <a href="#pageContent">Tuition</a>
+                <a href="#pageContent">Link 2</a>
               </li>
               <li>
-                <a href="#pageContent">Sign Up</a>
+                <a href="#pageContent">Link 3</a>
               </li>
               <li>
-                <a href="#pageContent">Visit</a>
+                <a href="#pageContent">Link 4</a>
               </li>
               <li>
-                <a href="#pageContent">Photo Tour</a>
+                <a href="#pageContent">Link 5</a>
               </li>
               <li>
-                <a href="#pageContent">Connect</a>
+                <a href="#pageContent">Link 6</a>
               </li>
             </ul>
           </li>
           <li>
-            <button type="button" aria-expanded="false" aria-controls="academicsMenu">
-              Academics
-            </button>
-            <ul id="academicsMenu" class="submenu hide">
+            <button>Menu Three</button>
+            <ul id="menuThree" class="submenu">
               <li>
-                <a href="#pageContent">Colleges & Schools</a>
+                <a href="#pageContent">Link 1</a>
               </li>
               <li>
-                <a href="#pageContent">Programs of Study</a>
+                <a href="#pageContent">Link 2</a>
               </li>
               <li>
-                <a href="#pageContent">Honors Programs</a>
+                <a href="#pageContent">Link 3</a>
               </li>
               <li>
-                <a href="#pageContent">Online Courses</a>
+                <button>Button 1</button>
+                <ul class="submenu">
+                  <li>
+                    <a href="#pageContent">Link 1-1</a>
+                  </li>
+                  <li>
+                    <a href="#pageContent">Link 1-2</a>
+                  </li>
+                  <li>
+                    <a href="#pageContent">Link 1-3</a>
+                  </li>
+                </ul>
               </li>
               <li>
-                <a href="#pageContent">Course Explorer</a>
+                <a href="#pageContent">Link 4</a>
               </li>
               <li>
-                <a href="#pageContent">Register for Class</a>
+                <a href="#pageContent">Link 5</a>
               </li>
               <li>
-                <a href="#pageContent">Academic Calendar</a>
+                <a href="#pageContent">Link 6</a>
               </li>
               <li>
-                <a href="#pageContent">Transcripts</a>
+                <button>Button 2</button>
+                <ul class="submenu">
+                  <li>
+                    <a href="#pageContent">Link 2-1</a>
+                  </li>
+                  <li>
+                    <a href="#pageContent">Link 2-2</a>
+                  </li>
+                  <li>
+                    <a href="#pageContent">Link 2-3</a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <a href="#pageContent">Link 7</a>
+              </li>
+              <li>
+                <a href="#pageContent">Link 8</a>
               </li>
             </ul>
           </li>
@@ -91,9 +113,9 @@
      class="disclosure-page-content"
      tabindex="-1"
      role="region"
-     aria-label="Mythical University sample page content">
+     aria-label="Sample page content">
       <h2 id="pageHeading">
-        Mythical University
+        Page Content
       </h2>
       <p>
         Sample content section. Activating a link above will update and navigate to this region.
@@ -102,7 +124,7 @@
     <script src="main.js"></script>
     <script>
       const nav = document.querySelector('header nav');
-      const navMenu = new DisclosureMenu(nav);
+      const navMenu = new MenuContainer(nav.querySelector('ul'));
     </script>
   </body>
 </html>
