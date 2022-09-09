@@ -42,7 +42,7 @@ class MenuItem {
   init () {
     if (this.button) {
       // Assumption: If an 'li' element has a 'button' element as its first
-      // child, its immediate sibling is assumed to be a 'ul' element
+      // child, the button's immediate sibling is assumed to be a 'ul' element
       // containing the submenu that the button controls.
       const ul = this.listItem.querySelector('button + ul');
       this.submenu = new MenuContainer(ul, this.button, this.menuContainer);
