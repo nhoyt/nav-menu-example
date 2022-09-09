@@ -45,17 +45,15 @@ class MenuItem {
       // child, its immediate sibling is assumed to be a 'ul' element
       // containing the submenu that the button controls.
       const ul = this.listItem.querySelector('button + ul');
-      this.submenu = new MenuContainer(ul, this.menuContainer);
+      this.submenu = new MenuContainer(ul, this.menuContainer, this.button);
       this.button.setAttribute('type', 'button');
       this.button.setAttribute('aria-expanded', 'false');
-      this.button.addEventListener('click', evt => {
-        this.handleButtonClick(evt);
-      });
+      this.button.addEventListener('click', evt => this.handleButtonClick(evt));
+      this.button.addEventListener('keydown', evt => this.handleButtonKeydown(evt));
     }
     if (this.anchor) {
-      this.anchor.addEventListener('click', evt => {
-        this.menuContainer.closeAllMenus();
-      });
+      this.anchor.addEventListener('click', evt => this.menuContainer.closeAllMenus());
+      this.anchor.addEventListener('keydown', evt => this.handleAnchorKeydown(evt));
     }
   }
 
@@ -73,6 +71,52 @@ class MenuItem {
       this.closeSubmenu();
     }
   }
+
+  handleButtonKeydown (evt) {
+    const key = evt.key,
+      target = evt.currentTarget;
+    let flag = false;
+
+    switch (key) {
+      case 'Esc':
+      case 'Escape':
+        if (target.getAttribute('aria-expanded') === 'false') {
+          const parentMenu = this.menuContainer.parentMenu;
+          if (parentMenu) parentMenu.closeAllSubmenus();
+          this.menuContainer.button.focus();
+        }
+        else {
+          this.closeSubmenu();
+        }
+        flag = true;
+        break;
+    }
+
+    if (flag) {
+      evt.stopPropagation();
+      evt.preventDefault();
+    }
+  }
+
+  handleAnchorKeydown (evt) {
+    const key = evt.key;
+    let flag = false;
+
+    switch (key) {
+      case 'Esc':
+      case 'Escape':
+        const parentMenu = this.menuContainer.parentMenu;
+        if (parentMenu) parentMenu.closeAllSubmenus();
+        this.menuContainer.button.focus();
+        flag = true;
+        break;
+    }
+
+    if (flag) {
+      evt.stopPropagation();
+      evt.preventDefault();
+    }
+  }
 }
 
 // ----------------------------------------------------------------
@@ -84,16 +128,21 @@ class MenuItem {
 //                 'li' children of this container's listElement
 //   parentMenu  - MenuContainer object that contains this MenuContainer, or
 //                 null if this is the top-level MenuContainer
+//   button
 
 class MenuContainer {
   listElement;
   menuItems = [];
   parentMenu = null;
+  button = null;
 
-  constructor (listElement, parentMenu) {
+  constructor (listElement, parentMenu, toggleButton) {
     this.listElement = listElement;
     if (parentMenu) {
       this.parentMenu = parentMenu;
+    }
+    if (toggleButton) {
+      this.button = toggleButton;
     }
 
     const listItems = Array.from(this.listElement.querySelectorAll(':scope > li'));
@@ -113,7 +162,7 @@ class MenuContainer {
   }
 
   closeAllMenus () {
-    let topLevel = this.parentMenu;
+    let topLevel = this.parentMenu || this;
     while (topLevel.parentMenu) {
       topLevel = topLevel.parentMenu;
     }
