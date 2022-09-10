@@ -134,10 +134,10 @@ class MenuItem {
 // MenuContainer: An object that contains a grouping of MenuItem objects
 //   that comprise a top-level menu or a submenu. A MenuContainer is a
 //   recursive structure in that its MenuItem objects may also contain
-//   MenuContainer objects (specifically when a MenuItem contains a button
+//   MenuContainer objects (specifically, when a MenuItem contains a button
 //   and submenu pair.)
-//   Important note: The MenuItem objects in the menuItems array represent
-//   only the immediate 'li' children of the MenuContainer's listItem.
+//   Important note: The MenuItem objects in the 'menuItems' array represent
+//   only the immediate 'li' children of the MenuContainer's 'listElement'.
 //   Additional note: The MenuContainer at the top-level of a menu system will
 //   have null values for its 'ctrlButton' and 'parentMenu' properties.
 //
