@@ -66,6 +66,7 @@ ul.submenu > li {
 
 ul.submenu > li > a {
   text-decoration: none;
+  white-space: nowrap;
 }
 
 ul.submenu > li > a:visited {
@@ -77,4 +78,5 @@ ul.submenu button {
   border: none;
   color: blue;
   padding-left: 0;
+  white-space: nowrap;
 }
