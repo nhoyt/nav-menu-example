@@ -17,9 +17,10 @@
 class MenuItem {
   listItem;         // 'li' element for this menuItem
   menuContainer;    // MenuContainer object that contains this menuItem
-  anchor  = null;   // If present, an 'a' element
-  button  = null;   // if present, a 'button' element
-  submenu = null;   // If present, a nested MenuContainer object
+  anchor  = null;   // If present, the 'a' element in this listItem
+  button  = null;   // If present, the 'button' element in this listItem
+  submenu = null;   // If present, the MenuContainer object that represents
+                    // the nested 'ul' element in this listItem
 
   constructor (domElement, menuContainer) {
     this.listItem = domElement;
@@ -49,7 +50,7 @@ class MenuItem {
       if (ul) {
         // Since the 'ul' element immediately follows a 'button' element within
         // an 'li' element, it is assumed to be a submenu within the 'li'.
-        this.submenu = new MenuContainer(ul, this.button, this.menuContainer);
+        this.submenu = new MenuContainer(ul, this, this.menuContainer);
       }
       this.button.setAttribute('type', 'button');
       this.button.setAttribute('aria-expanded', 'false');
@@ -64,6 +65,11 @@ class MenuItem {
 
   closeSubmenu () {
     this.button.setAttribute('aria-expanded', 'false');
+  }
+
+  focus () {
+    const element = this.anchor || this.button;
+    element.focus();
   }
 
   handleButtonClick (evt) {
@@ -131,7 +137,8 @@ class MenuItem {
 //
 // Properties:
 //   listElement - DOM list element at the root of this container's subtree
-//   ctrlButton  - DOM 'button' element that controls this MenuContainer
+//   ctrlButton  - MenuItem object that represents the 'button' element that
+//                 controls this MenuContainer
 //   parentMenu  - MenuContainer object that contains this MenuContainer, or
 //                 null if this is the top-level MenuContainer
 //   menuItems   - array of MenuItem objects that correspond to the immediate
@@ -145,6 +152,7 @@ class MenuContainer {
 
   constructor (listElement, ctrlButton, parentMenu) {
     this.listElement = listElement;
+    this.listElement.addEventListener('focusout', evt => this.onFocusOut(evt));
 
     // These will both be null for the top-level container
     if (ctrlButton) {
@@ -158,6 +166,12 @@ class MenuContainer {
     // console.log(`listItems: ${listItems.length}`);
     for (const listItem of listItems) {
       this.menuItems.push(new MenuItem(listItem, this));
+    }
+  }
+
+  onFocusOut (evt) {
+    if (this.ctrlButton && !this.listElement.contains(evt.relatedTarget)) {
+      this.ctrlButton.closeSubmenu();
     }
   }
 
