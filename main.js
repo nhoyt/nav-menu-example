@@ -1,5 +1,7 @@
 // main.js
 
+'use strict';
+
 // ----------------------------------------------------------------
 // MenuItem: An object that encapsulates elements that have either link
 //   behavior or button/submenu show/hide behavior. Each MenuItem will have

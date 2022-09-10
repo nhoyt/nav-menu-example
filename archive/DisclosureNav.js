@@ -1,3 +1,12 @@
+// This content is licensed according to the W3C Software License at
+// https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
+// Supplemental JS for the disclosure menu keyboard behavior
+
+// Note: This code is being used for reference only. There have been no
+// modifications made to the code.
+
+'use strict';
+
 class DisclosureNav {
   constructor(domNode) {
     this.rootNode = domNode;
