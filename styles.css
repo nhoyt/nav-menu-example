@@ -57,6 +57,12 @@ button::after {
   content: ' > ';
 }
 
+button:focus, ul.submenu button:focus {
+  outline: 2px solid #285dc5;
+  outline-offset: -2px;
+  border-radius: 3px;
+}
+
 button[aria-expanded="false"] + ul {
   display: none;
 }
@@ -87,6 +93,6 @@ ul.submenu button {
   background: none;
   border: none;
   color: blue;
-  padding-left: 0;
+  margin-left: -6px;
   white-space: nowrap;
 }

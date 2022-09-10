@@ -68,10 +68,12 @@ class MenuItem {
   }
 
   openSubmenu () {
+    // console.log(`openSubmenu: ${this.submenuIsOpen}`);
     this.button.setAttribute('aria-expanded', 'true');
   }
 
   closeSubmenu () {
+    // console.log(`closeSubmenu: ${this.submenuIsOpen}`);
     this.button.setAttribute('aria-expanded', 'false');
   }
 
@@ -88,6 +90,7 @@ class MenuItem {
       this.menuContainer.closeAllSubmenus();
       this.openSubmenu();
     }
+    this.focus();
   }
 
   handleMenuItemKeydown (evt) {
@@ -158,6 +161,7 @@ class MenuContainer {
   ctrlButton = null;
   parentMenu = null;
   menuItems = [];
+  mcButtons = [];
 
   constructor (listElement, ctrlButton, parentMenu) {
     this.listElement = listElement;
@@ -173,8 +177,11 @@ class MenuContainer {
 
     const listItems = Array.from(this.listElement.querySelectorAll(':scope > li'));
     // console.log(`listItems: ${listItems.length}`);
+
     for (const listItem of listItems) {
-      this.menuItems.push(new MenuItem(listItem, this));
+      const menuItem = new MenuItem(listItem, this);
+      this.menuItems.push(menuItem);
+      if (menuItem.button) { this.mcButtons.push(menuItem); }
     }
   }
 
@@ -194,11 +201,9 @@ class MenuContainer {
   }
 
   closeAllSubmenus () {
-    for (const menuItem of this.menuItems) {
-      if (menuItem.submenu) {
-        menuItem.submenu.closeAllSubmenus();
-        menuItem.closeSubmenu();
-      }
+    for (const menuItem of this.mcButtons) {
+      menuItem.submenu.closeAllSubmenus();
+      if (menuItem.submenuIsOpen) { menuItem.closeSubmenu(); }
     }
   }
 
