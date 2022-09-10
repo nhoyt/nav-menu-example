@@ -55,12 +55,20 @@ class MenuItem {
       this.button.setAttribute('type', 'button');
       this.button.setAttribute('aria-expanded', 'false');
       this.button.addEventListener('click', evt => this.handleButtonClick(evt));
-      this.button.addEventListener('keydown', evt => this.handleButtonKeydown(evt));
+      this.button.addEventListener('keydown', evt => this.handleMenuItemKeydown(evt));
     }
     if (this.anchor) {
       this.anchor.addEventListener('click', evt => this.menuContainer.closeAllMenus());
-      this.anchor.addEventListener('keydown', evt => this.handleAnchorKeydown(evt));
+      this.anchor.addEventListener('keydown', evt => this.handleMenuItemKeydown(evt));
     }
+  }
+
+  get submenuIsOpen () {
+    return this.button.getAttribute('aria-expanded') === 'true';
+  }
+
+  openSubmenu () {
+    this.button.setAttribute('aria-expanded', 'true');
   }
 
   closeSubmenu () {
@@ -73,54 +81,48 @@ class MenuItem {
   }
 
   handleButtonClick (evt) {
-    const state = this.button.getAttribute('aria-expanded');
-    if (state === 'false') {
-      this.menuContainer.closeAllSubmenus();
-      this.button.setAttribute('aria-expanded', 'true');
+    if (this.submenuIsOpen) {
+      this.closeSubmenu();
     }
     else {
-      this.closeSubmenu();
+      this.menuContainer.closeAllSubmenus();
+      this.openSubmenu();
     }
   }
 
-  handleButtonKeydown (evt) {
-    const key = evt.key,
-      target = evt.currentTarget;
+  handleMenuItemKeydown (evt) {
     let flag = false;
 
-    switch (key) {
+    switch (evt.key) {
       case 'Esc':
       case 'Escape':
-        if (target.getAttribute('aria-expanded') === 'false') {
-          const parentMenu = this.menuContainer.parentMenu;
+        const target = evt.currentTarget;
+        const parentMenu = this.menuContainer.parentMenu;
+        const ctrlButton = this.menuContainer.ctrlButton;
+
+        if (target === this.anchor) {
           if (parentMenu) parentMenu.closeAllSubmenus();
-          const ctrlButton = this.menuContainer.ctrlButton;
           if (ctrlButton) ctrlButton.focus();
         }
-        else {
-          this.closeSubmenu();
+        if (target === this.button) {
+          if (this.submenuIsOpen) {
+            this.closeSubmenu();
+          }
+          else {
+            if (parentMenu) parentMenu.closeAllSubmenus();
+            if (ctrlButton) ctrlButton.focus();
+          }
         }
         flag = true;
         break;
-    }
 
-    if (flag) {
-      evt.stopPropagation();
-      evt.preventDefault();
-    }
-  }
+      case 'Home':
+        this.menuContainer.setFocusFirstItem();
+        flag = true;
+        break;
 
-  handleAnchorKeydown (evt) {
-    const key = evt.key;
-    let flag = false;
-
-    switch (key) {
-      case 'Esc':
-      case 'Escape':
-        const parentMenu = this.menuContainer.parentMenu;
-        if (parentMenu) parentMenu.closeAllSubmenus();
-        const ctrlButton = this.menuContainer.ctrlButton;
-        if (ctrlButton) ctrlButton.focus();
+      case 'End':
+        this.menuContainer.setFocusLastItem();
         flag = true;
         break;
     }
@@ -174,6 +176,15 @@ class MenuContainer {
     for (const listItem of listItems) {
       this.menuItems.push(new MenuItem(listItem, this));
     }
+  }
+
+  setFocusFirstItem () {
+    this.menuItems[0].focus();
+  }
+
+  setFocusLastItem () {
+    const index = this.menuItems.length - 1;
+    this.menuItems[index].focus();
   }
 
   onFocusOut (evt) {
