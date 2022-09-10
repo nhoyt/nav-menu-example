@@ -2,25 +2,23 @@
 
 // ----------------------------------------------------------------
 // MenuItem: An object that encapsulates elements that have either link
-//     behavior or button/submenu show/hide behavior.
+//   behavior or button/submenu show/hide behavior. Each MenuItem will have
+//   EITHER an anchor OR a button (along with the submenu that it controls).
 //
 // Properties:
-//   listItem: the DOM 'li' element that represents this menuItem
-//   menuContainer: the MenuContainer object that contains this menuItem
-//   anchor: if the first child of the listItem is an 'a' element, it is
-//     assigned to the anchor property
-//   button: if the first child of the listItem is a 'button' element, it is
-//     assigned to the button property
-//   submenu: if the immediate sibling after the button is a 'ul' element, it
-//     is assigned to the submenu property
+//   listItem      - The 'li' element represented by this MenuItem object
+//   menuContainer - The MenuContainer object that contains this MenuItem
+//   anchor        - If present, the 'a' element in this listItem
+//   button        - If present, the 'button' element in this listItem
+//   submenu       - If present, the MenuContainer object that represents
+//                   the nested 'ul' element in this listItem
 
 class MenuItem {
-  listItem;         // 'li' element for this menuItem
-  menuContainer;    // MenuContainer object that contains this menuItem
-  anchor  = null;   // If present, the 'a' element in this listItem
-  button  = null;   // If present, the 'button' element in this listItem
-  submenu = null;   // If present, the MenuContainer object that represents
-                    // the nested 'ul' element in this listItem
+  listItem;
+  menuContainer;
+  anchor  = null;
+  button  = null;
+  submenu = null;
 
   constructor (domElement, menuContainer) {
     this.listItem = domElement;
@@ -133,15 +131,22 @@ class MenuItem {
 }
 
 // ----------------------------------------------------------------
-// MenuContainer
+// MenuContainer: An object that contains a grouping of MenuItem objects
+//   that comprise a top-level menu or a submenu. A MenuContainer is a
+//   recursive structure in that its MenuItem objects may also contain
+//   MenuContainer objects (specifically when a MenuItem contains a button
+//   and submenu pair.)
+//   Important note: The MenuItem objects in the menuItems array represent
+//   only the immediate 'li' children of the MenuContainer's listItem.
+//   Additional note: The MenuContainer at the top-level of a menu system will
+//   have null values for its 'ctrlButton' and 'parentMenu' properties.
 //
 // Properties:
-//   listElement - DOM list element at the root of this container's subtree
-//   ctrlButton  - MenuItem object that represents the 'button' element that
-//                 controls this MenuContainer
-//   parentMenu  - MenuContainer object that contains this MenuContainer, or
-//                 null if this is the top-level MenuContainer
-//   menuItems   - array of MenuItem objects that correspond to the immediate
+//   listElement - The list element at the root of this container's subtree
+//   ctrlButton  - The MenuItem object that represents the 'button' element
+//                 that controls this MenuContainer
+//   parentMenu  - The MenuContainer object that contains this MenuContainer
+//   menuItems   - An array of MenuItem objects that represent the immediate
 //                 'li' children of this container's listElement
 
 class MenuContainer {
