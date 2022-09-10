@@ -36,19 +36,29 @@ main > h2 {
 .disclosure-nav {
   background-color: #eee;
   display: flex;
+  align-items: baseline;
   justify-content: space-between;
   list-style-type: none;
   padding: 0;
   margin: 0;
-  width: 30%;
+  width: 50%;
 }
 
-button[aria-expanded="false"] + ul {
-  display: none;
+.disclosure-nav a.top-level {
+  background-color: #eee;
+  border: 1px solid #767676;
+  border-radius: 3px;
+  color: inherit;
+  text-decoration: none;
+  padding: 5px 8px;
 }
 
 button::after {
   content: ' > ';
+}
+
+button[aria-expanded="false"] + ul {
+  display: none;
 }
 
 ul.submenu {
