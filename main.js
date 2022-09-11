@@ -54,12 +54,12 @@ class MenuItem {
       }
       this.button.setAttribute('type', 'button');
       this.button.setAttribute('aria-expanded', 'false');
-      this.button.addEventListener('click', evt => this.handleButtonClick(evt));
-      this.button.addEventListener('keydown', evt => this.handleMenuItemKeydown(evt));
+      this.button.addEventListener('click', evt => this.onButtonClick(evt));
+      this.button.addEventListener('keydown', evt => this.onMenuItemKeydown(evt));
     }
     if (this.anchor) {
       this.anchor.addEventListener('click', evt => this.menuContainer.closeAllMenus());
-      this.anchor.addEventListener('keydown', evt => this.handleMenuItemKeydown(evt));
+      this.anchor.addEventListener('keydown', evt => this.onMenuItemKeydown(evt));
     }
   }
 
@@ -77,13 +77,7 @@ class MenuItem {
     this.button.setAttribute('aria-expanded', 'false');
   }
 
-  focus () {
-    const element = this.anchor || this.button;
-    element.focus();
-  }
-
-  handleButtonClick (evt) {
-    // console.log(`buttonClick: ${evt.target.textContent}`);
+  toggleSubmenu () {
     if (this.submenuIsOpen) {
       this.closeSubmenu();
     }
@@ -91,10 +85,20 @@ class MenuItem {
       this.menuContainer.closeAllSubmenus();
       this.openSubmenu();
     }
+  }
+
+  focus () {
+    const element = this.anchor || this.button;
+    element.focus();
+  }
+
+  onButtonClick (evt) {
+    evt.stopPropagation();
+    this.toggleSubmenu();
     this.focus();
   }
 
-  handleMenuItemKeydown (evt) {
+  onMenuItemKeydown (evt) {
     let flag = false;
 
     switch (evt.key) {
@@ -132,8 +136,8 @@ class MenuItem {
     }
 
     if (flag) {
-      evt.stopPropagation();
       evt.preventDefault();
+      evt.stopPropagation();
     }
   }
 }
@@ -186,15 +190,6 @@ class MenuContainer {
     }
   }
 
-  setFocusFirstItem () {
-    this.menuItems[0].focus();
-  }
-
-  setFocusLastItem () {
-    const index = this.menuItems.length - 1;
-    this.menuItems[index].focus();
-  }
-
   // onFocusOut: Handle 'focusout' events for the MenuContainer listElement.
   // It is important to have submenus close automatically when menu items are
   // traversed by keyboard. Without this behavior, nested submenus will remain
@@ -209,14 +204,28 @@ class MenuContainer {
   // both of their handlers are activated: the 'focusout' event causes the
   // menu to be closed by this handler (unless the test for 'relatedTarget'
   // is in place), and the 'click' event causes it to be opened again by the
-  // MenuItem's click handler, handleButtonClick.
+  // MenuItem's click handler, onButtonClick.
 
   onFocusOut (evt) {
+    // console.log(`onFocusOut: ${evt.relatedTarget}`);
+    evt.stopImmediatePropagation();
+    evt.stopPropagation();
+
     if (this.ctrlButton === null) return;
+    if (evt.relatedTarget === null) return;
     if (evt.relatedTarget === this.ctrlButton.button) return;
     if (!this.listElement.contains(evt.relatedTarget)) {
       this.ctrlButton.closeSubmenu();
     }
+  }
+
+  setFocusFirstItem () {
+    this.menuItems[0].focus();
+  }
+
+  setFocusLastItem () {
+    const index = this.menuItems.length - 1;
+    this.menuItems[index].focus();
   }
 
   closeAllSubmenus () {
