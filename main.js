@@ -195,15 +195,21 @@ class MenuContainer {
     this.menuItems[index].focus();
   }
 
-  // onFocusOut
-  // It is necessary to test whether the relatedTarget of the event (i.e. the
-  // element getting focus) is this MenuContainer's ctrlButton.button. Without
-  // this test, clicking on the ctrlButton.button when its submenu contains the
-  // focused element will cause the submenu to close and then open again. This
-  // is because two event handlers are activated: the 'focusout' event causes
-  // the menu to be closed by this handler (unless the test is in place), and
-  // the 'click' event causes it to be opened again by the MenuItem's click
-  // handler, handleButtonClick.
+  // onFocusOut: Handle 'focusout' events for the MenuContainer listElement.
+  // It is important to have submenus close automatically when menu items are
+  // traversed by keyboard. Without this behavior, nested submenus will remain
+  // open after tabbing out of them, which can result in some of the parent
+  // submenu items remaining obscured.
+  //
+  // Note: It is necessary to test whether the 'relatedTarget' of the
+  // focusout event (i.e. the element getting focus) is this MenuContainer's
+  // ctrlButton.button. Without this test, clicking on the ctrlButton.button
+  // when its submenu contains the focused element will cause the submenu to
+  // close and then open again. This is because two events are triggered and
+  // both of their handlers are activated: the 'focusout' event causes the
+  // menu to be closed by this handler (unless the test for 'relatedTarget'
+  // is in place), and the 'click' event causes it to be opened again by the
+  // MenuItem's click handler, handleButtonClick.
 
   onFocusOut (evt) {
     if (this.ctrlButton === null) return;
