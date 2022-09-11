@@ -205,15 +205,22 @@ class MenuContainer {
   // menu to be closed by this handler (unless the test for 'relatedTarget'
   // is in place), and the 'click' event causes it to be opened again by the
   // MenuItem's click handler, onButtonClick.
+  //
+  // Note: Safari exhibits behavior similar to that described about unless
+  // the call to stopPropagation is added to the onFocusOut handler. Other
+  // browsers (Chrome and Firefox) seem to work properly without the call.
 
   onFocusOut (evt) {
     // console.log(`onFocusOut: ${evt.relatedTarget}`);
     evt.stopImmediatePropagation();
     evt.stopPropagation();
 
-    if (this.ctrlButton === null) return;
-    if (evt.relatedTarget === null) return;
-    if (evt.relatedTarget === this.ctrlButton.button) return;
+    if (this.ctrlButton === null || evt.relatedTarget === null) {
+      return;
+    }
+    if (evt.relatedTarget === this.ctrlButton.button) {
+      return;
+    }
     if (!this.listElement.contains(evt.relatedTarget)) {
       this.ctrlButton.closeSubmenu();
     }
