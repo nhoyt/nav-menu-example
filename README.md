@@ -6,6 +6,8 @@ Navigation menu example with the following features:
 * Includes nested submenus (submenus triggered by menu items in submenus) to an arbitrary depth
 * Could be used to test how submenus are rendered when they include many menu items
 
+See it live: [nav-menu-example on GitHub Pages](https://nhoyt.github.io/nav-menu-example).
+
 ## Conceptual Model
 
 The following features are present in the JavaScript code:
@@ -36,7 +38,7 @@ The following markup patterns are followed in creating the HTML for the navigati
 
 ## To Do
 
-* When focus leaves a submenu, close that submenu
-* When focus leaves the menu system, closeAllSubmenus
-* When user clicks on page outside of the menu system, closeAllSubmenus (same condition?)
+x When focus leaves a submenu, close that submenu
+x When focus leaves the menu system, closeAllSubmenus
+x When user clicks on page outside of the menu system, closeAllSubmenus (same condition?)
 * Arrow keys: down/up moves within submenu; right/left moves to next or previous parent menu.
