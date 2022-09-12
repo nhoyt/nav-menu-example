@@ -261,15 +261,21 @@ class DisclosureMenu {
 
   constructor (rootNode) {
     this.rootNode = rootNode;
-    this.rootNode.addEventListener('focusout', evt => this.onFocusOut(evt));
 
     // Assumption: menuContainer DOM element is first descendant 'ul' element of rootNode
     this.menuContainer = new MenuContainer(rootNode.querySelector('ul'));
+
     window.addEventListener('unload', this.menuContainer.closeAllSubmenus());
+    document.body.addEventListener('pointerdown', evt => this.onPointerDown(evt));
   }
 
-  onFocusOut (evt) {
-    if (!this.rootNode.contains(evt.relatedTarget)) {
+  onPointerDown (evt) {
+    // console.log(`pointerType: ${evt.pointerType}`);
+    // console.log(`evt.button: ${evt.button}`);
+    if (evt.pointerType === 'mouse' && evt.button > 0) {
+      return;
+    }
+    if (!this.rootNode.contains(evt.target)) {
       this.menuContainer.closeAllMenus();
     }
   }
