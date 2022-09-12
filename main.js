@@ -262,7 +262,7 @@ class DisclosureMenu {
   constructor (rootNode) {
     this.rootNode = rootNode;
 
-    // Assumption: menuContainer DOM element is first descendant 'ul' element of rootNode
+    // Assumption: menuContainer listElement is first 'ul' descendant of rootNode
     this.menuContainer = new MenuContainer(rootNode.querySelector('ul'));
 
     window.addEventListener('unload', this.menuContainer.closeAllSubmenus());
