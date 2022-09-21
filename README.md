@@ -38,7 +38,7 @@ The following markup patterns are followed in creating the HTML for the navigati
 
 ## To Do
 
-x When focus leaves a submenu, close that submenu
-x When focus leaves the menu system, closeAllSubmenus
-x When user clicks on page outside of the menu system, closeAllSubmenus (same condition?)
-* Arrow keys: down/up moves within submenu; right/left moves to next or previous parent menu.
+* (x) When focus leaves a submenu, close that submenu
+* (x) When focus leaves the menu system, closeAllSubmenus
+* (x) When user clicks on page outside of the menu system, closeAllSubmenus (same condition?)
+* ( ) Arrow keys: down/up moves within submenu; right/left moves to next or previous parent menu.
