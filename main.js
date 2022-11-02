@@ -3,9 +3,10 @@
 'use strict';
 
 // ----------------------------------------------------------------
-// MenuItem: An object that encapsulates elements that have either link
-//   behavior or button/submenu show/hide behavior. Each MenuItem will have
-//   EITHER an anchor OR a button (along with the submenu that it controls).
+// MenuItem: An object that manages DOM elements with menu item behavior that
+// can be one of two types. The object's interactive element will either behave
+// as a link (anchor element) or as a menu button that controls the visibility
+// of a submenu.
 //
 // Properties:
 //   listItem      - The 'li' element represented by this MenuItem object
@@ -26,39 +27,40 @@ class MenuItem {
     this.listItem = domElement;
     this.menuContainer = menuContainer;
 
-    const firstChild = this.listItem.firstElementChild;
-    switch (firstChild.tagName.toLowerCase()) {
-      case 'a':
-        this.anchor = firstChild;
-        break;
+    // Assumptions for HTML markup: In the list hierarchy that defines the menu
+    // structure, a list item ('li' element) will have only one of two possible
+    // types of content: (1) an anchor ('a' element) that is a link to another
+    // page, or (2) a 'button' element / 'ul' element pair, where the 'button'
+    // is the interactive element that toggles the visibility of the 'ul' that
+    // is its corresponding submenu.
 
-      case 'button':
-        this.button = firstChild;
-        break;
-    }
+    // Attempt to get the first 'a' element child of listItem (may be null)
+    this.anchor = this.listItem.querySelector(':scope > a');
+
+    // Attempt to get the first 'button' element child of listItem (may be null)
+    this.button = this.listItem.querySelector(':scope > button');
 
     this.init();
   }
 
   init () {
     if (this.button) {
-      // Assumption: If an 'li' element has a 'button' element as its first
-      // child, the expectation for this navigation menu markup pattern is
-      // that the button's immediate sibling is a 'ul' element containing the
-      // submenu that the button controls.
-      const ul = this.listItem.querySelector('button + ul');
+      // If the listItem has a child 'button' element, we then assume that the
+      // listItem's child 'ul' element represents the submenu that this button
+      // controls.
+      const ul = this.listItem.querySelector(':scope > ul');
       if (ul) {
-        // Since the 'ul' element immediately follows a 'button' element within
-        // an 'li' element, it is assumed to be a submenu within the 'li'.
         this.submenu = new MenuContainer(ul, this, this.menuContainer);
       }
       this.button.setAttribute('type', 'button');
       this.button.setAttribute('aria-expanded', 'false');
       this.button.addEventListener('click', evt => this.onButtonClick(evt));
+      this.button.addEventListener('focus', evt => this.onFocus(evt));
       this.button.addEventListener('keydown', evt => this.onMenuItemKeydown(evt));
     }
     if (this.anchor) {
       this.anchor.addEventListener('click', evt => this.menuContainer.closeAllMenus());
+      this.anchor.addEventListener('focus', evt => this.onFocus(evt));
       this.anchor.addEventListener('keydown', evt => this.onMenuItemKeydown(evt));
     }
   }
@@ -87,9 +89,18 @@ class MenuItem {
     }
   }
 
+  get itemIndex () {
+    return this.menuContainer.menuItems.indexOf(this);
+  }
+
   focus () {
     const element = this.anchor || this.button;
     element.focus();
+  }
+
+  onFocus (evt) {
+    // console.log(`onFocus: ${this.itemIndex}`);
+    this.menuContainer.selectedIndex = this.itemIndex;
   }
 
   onButtonClick (evt) {
@@ -99,14 +110,13 @@ class MenuItem {
   }
 
   onMenuItemKeydown (evt) {
-    let flag = false;
+    const target = evt.currentTarget;
+    const parentMenu = this.menuContainer.parentMenu;
+    const ctrlButton = this.menuContainer.ctrlButton;
 
     switch (evt.key) {
-      case 'Esc':
       case 'Escape':
-        const target = evt.currentTarget;
-        const parentMenu = this.menuContainer.parentMenu;
-        const ctrlButton = this.menuContainer.ctrlButton;
+        evt.preventDefault();
 
         if (target === this.anchor) {
           if (parentMenu) parentMenu.closeAllSubmenus();
@@ -121,23 +131,39 @@ class MenuItem {
             if (ctrlButton) ctrlButton.focus();
           }
         }
-        flag = true;
+        break;
+
+      case 'ArrowUp':
+      case 'ArrowLeft':
+        evt.preventDefault();
+        this.menuContainer.selectPrevItem();
+        break;
+
+      case 'ArrowDown':
+      case 'ArrowRight':
+        evt.preventDefault();
+        if (target === this.anchor) {
+          this.menuContainer.selectNextItem();
+        }
+        if (target === this.button) {
+          if (this.submenuIsOpen) {
+            this.submenu.selectFirstItem();
+          }
+          else {
+            this.menuContainer.selectNextItem();
+          }
+        }
         break;
 
       case 'Home':
-        this.menuContainer.setFocusFirstItem();
-        flag = true;
+        evt.preventDefault();
+        this.menuContainer.selectFirstItem();
         break;
 
       case 'End':
-        this.menuContainer.setFocusLastItem();
-        flag = true;
+        evt.preventDefault();
+        this.menuContainer.selectLastItem();
         break;
-    }
-
-    if (flag) {
-      evt.preventDefault();
-      evt.stopPropagation();
     }
   }
 }
@@ -165,6 +191,7 @@ class MenuContainer {
   listElement;
   ctrlButton = null;
   parentMenu = null;
+  selectedIndex = -1;
   menuItems = [];
   mcButtons = [];
 
@@ -188,6 +215,8 @@ class MenuContainer {
       this.menuItems.push(menuItem);
       if (menuItem.button) { this.mcButtons.push(menuItem); }
     }
+
+    this.lastIndex = this.menuItems.length - 1;
   }
 
   // onFocusOut: Handle 'focusout' events for the MenuContainer listElement.
@@ -226,13 +255,51 @@ class MenuContainer {
     }
   }
 
-  setFocusFirstItem () {
-    this.menuItems[0].focus();
+  selectMenuItem (index) {
+    this.selectedIndex = index;
+    this.menuItems[index].focus();
   }
 
-  setFocusLastItem () {
-    const index = this.menuItems.length - 1;
-    this.menuItems[index].focus();
+  selectFirstItem () {
+    this.selectMenuItem(0);
+  }
+
+  selectLastItem () {
+    this.selectMenuItem(this.lastIndex);
+  }
+
+  selectPrevItem () {
+    let index;
+    switch (this.selectedIndex) {
+      case -1:
+        index = this.lastIndex; // TODO: what should happen here?
+        break;
+      case 0:
+        index = 0;
+        break;
+      default:
+        index = this.selectedIndex - 1;
+        break;
+    }
+    // const index = this.selectedIndex === 0 ? 0 : this.selectedIndex - 1;
+    this.selectMenuItem(index);
+  }
+
+  selectNextItem () {
+    let index;
+    switch (this.selectedIndex) {
+      case -1:
+        index = 0;
+        break;
+      case this.lastIndex:
+        index = this.lastIndex;
+        break;
+      default:
+        index = this.selectedIndex + 1;
+        break;
+    }
+    // const index = this.selectedIndex === this.lastIndex ? this.lastIndex : this.selectedIndex + 1;
+    this.selectMenuItem(index);
   }
 
   closeAllSubmenus () {
