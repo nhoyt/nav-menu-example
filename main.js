@@ -134,13 +134,11 @@ class MenuItem {
         break;
 
       case 'ArrowUp':
-      case 'ArrowLeft':
         evt.preventDefault();
         this.menuContainer.selectPrevItem();
         break;
 
       case 'ArrowDown':
-      case 'ArrowRight':
         evt.preventDefault();
         if (target === this.anchor) {
           this.menuContainer.selectNextItem();
@@ -152,6 +150,28 @@ class MenuItem {
           else {
             this.menuContainer.selectNextItem();
           }
+        }
+        break;
+
+      case 'ArrowLeft':
+        evt.preventDefault();
+        if (parentMenu) {
+          parentMenu.closeAllSubmenus();
+          parentMenu.selectPrevItem();
+        }
+        else {
+          this.menuContainer.selectPrevItem();
+        }
+        break;
+
+      case 'ArrowRight':
+        evt.preventDefault();
+        if (parentMenu) {
+          parentMenu.closeAllSubmenus();
+          parentMenu.selectNextItem();
+        }
+        else {
+          this.menuContainer.selectNextItem();
         }
         break;
 
