@@ -20,7 +20,7 @@ The following features are present in the JavaScript code:
 
 * A MenuItem with menu button behavior contains a 'button' element and a 'ul' or unordered list element that is initially hidden. When the button is activated, it toggles the visibility of the submenu ('ul' element). In the code, the 'ul' element is used to construct a nested MenuContainer.
 
-* A MenuContainer not only contains MenuItem objects, but also a reference to the menu button that controls it and the container's parent menu, if they exist.
+* A MenuContainer not only contains MenuItem objects, but also a reference to the menu button that controls it ('ctrlButton') and the container's parent menu ('parentMenu'), if they exist.
 
 * The top-level menu container is represented by a MenuContainer in the code. Its parentMenu and ctrlButton references are null.
 
@@ -38,7 +38,7 @@ The following markup patterns are followed in creating the HTML for the navigati
 
 ## To Do
 
-* (x) When focus leaves a submenu, close that submenu
-* (x) When focus leaves the menu system, closeAllSubmenus
-* (x) When user clicks on page outside of the menu system, closeAllSubmenus (same condition?)
-* ( ) Arrow keys: down/up moves within submenu; right/left moves to next or previous parent menu.
+* (x) When focus leaves a submenu, close that submenu (auto-close is needed when submenus have sub-submenus to avoid obscuring focused element).
+* (x) When focus leaves the menu system, closeAllSubmenus. This includes handling the following cases: (1) user tabs or shift-tabs out of the menu system, and (2) user clicks on the page outside of the menu system.
+* (x) Arrow keys: down/up moves within submenu (but no auto-cycle); right/left moves to next or previous item in the parent menu.
+* (x) Menu button visual indicators (chevrons) created using CSS for compatibility with High Contrast Mode (as opposed to using images).
