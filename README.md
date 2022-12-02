@@ -40,5 +40,6 @@ The following markup patterns are followed in creating the HTML for the navigati
 
 * (x) When focus leaves a submenu, close that submenu (auto-close is needed when submenus have sub-submenus to avoid obscuring focused element).
 * (x) When focus leaves the menu system, closeAllSubmenus. This includes handling the following cases: (1) user tabs or shift-tabs out of the menu system, and (2) user clicks on the page outside of the menu system.
-* (x) Arrow keys: down/up moves within submenu (but no auto-cycle); right/left moves to next or previous item in the parent menu.
+* (x) Up-/Down-arrow keys: when focus is on a button and its submenu is visible, down-arrow moves to the first item within the submenu; otherwise the up-/down-arrow keys move focus to the previous/next item within the current menu (but without wraparound).
+* (x) Left-/Right-arrow keys: when focus is within a submenu, left-/right-arrow acts as a shortcut that moves focus to the previous/next item in the parent menu; otherwise (when you're at the top-level menu), the left-/right-arrow keys move focus to the previous/next item in the current menu.
 * (x) Menu button visual indicators (chevrons) created using CSS for compatibility with High Contrast Mode (as opposed to using images).
